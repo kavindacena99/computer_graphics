@@ -1,0 +1,308 @@
+import java.awt.*;
+import javax.swing.*;
+
+public class DDALine extends JFrame {
+
+    private int x1, y1, x2, y2;
+
+    public DDALine(int x1, int y1, int x2, int y2) {
+        this.x1 = x1;
+        this.y1 = y1;
+        this.x2 = x2;
+        this.y2 = y2;
+    }
+
+    public void paint(Graphics g) {
+        drawLine(g, x1, y1, x2, y2);
+    }
+
+    private void drawLine(Graphics g, int x1, int y1, int x2, int y2) {
+        int dx = x2 - x1;
+        int dy = y2 - y1;
+
+       
+        int steps = Math.max(Math.abs(dx), Math.abs(dy));
+
+     
+        float xIncrement = dx / (float) steps;
+        float yIncrement = dy / (float) steps;
+
+        
+        float x = x1, y = y1;
+
+        for (int i = 0; i <= steps; i++) {
+           
+            g.fillOval(Math.round(x), Math.round(y), 2, 2);
+
+           
+            x += xIncrement;
+            y += yIncrement;
+        }
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("DDA Line Algorithm");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 800);
+
+        int x1 = 100, y1 = 100; 
+        int x2 = 600, y2 = 400; 
+
+        DDALine panel = new DDALine(x1, y1, x2, y2);
+        frame.add(panel);
+        frame.setVisible(true);
+    }
+}
+
+=============================================================
+
+import java.awt.*;
+import javax.swing.*;
+
+public class BresenhamLine extends JFrame {
+
+    private int x1, y1, x2, y2;
+
+    public BresenhamLine(int x1, int y1, int x2, int y2) {
+        this.x1 = x1;
+        this.y1 = y1;
+        this.x2 = x2;
+        this.y2 = y2;
+    }
+
+    public void paint(Graphics g) {
+        drawLine(g, x1, y1, x2, y2);
+    }
+
+    private void drawLine(Graphics g, int x1, int y1, int x2, int y2) {
+        int dx = Math.abs(x2 - x1);
+        int dy = Math.abs(y2 - y1);
+        int sx = x1 < x2 ? 1 : -1;
+        int sy = y1 < y2 ? 1 : -1;
+
+        boolean steep = dy > dx;
+
+        if (steep) {
+            
+            int temp = dx;
+            dx = dy;
+            dy = temp;
+        }
+
+        int p = 2 * dy - dx; 
+        int x = x1, y = y1;
+
+        for (int i = 0; i <= dx; i++) {
+            // Plot the pixel
+            if (steep) {
+                g.fillOval(y, x, 2, 2); 
+            } else {
+                g.fillOval(x, y, 2, 2);
+            }
+
+            
+            if (p > 0) {
+                y += sy;
+                p -= 2 * dx;
+            }
+            p += 2 * dy;
+            x += sx;
+        }
+    }
+
+    public static void main(String[] args) {
+        
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 800);
+
+        int x1 = 100, y1 = 100; 
+        int x2 = 600, y2 = 400; 
+
+        BresenhamLine frame = new BresenhamLine(x1, y1, x2, y2);
+        
+        frame.setVisible(true);
+    }
+}
+=====================================================================================================
+
+import java.awt.*;
+import javax.swing.*;
+
+public class BresenhamCircle extends JFrame{
+
+    private int xc, yc, r;
+
+    public BresenhamCircle(int xc, int yc, int r) {
+        this.xc = xc;
+        this.yc = yc;
+        this.r = r;
+    }
+
+    public void paint(Graphics g) {
+        drawCircle(g, xc, yc, r);
+    }
+
+    private void drawCircle(Graphics g, int xc, int yc, int r) {
+        int x = 0, y = r;
+        int d = 3 - 2 * r;
+
+        while (x <= y) {
+            
+            plotPoints(g, xc, yc, x, y);
+
+            
+            if (d <= 0) {
+                d = d + 4 * x + 6;
+            } else {
+                d = d + 4 * (x - y) + 10;
+                y--;
+            }
+            x++;
+        }
+    }
+
+    private void plotPoints(Graphics g, int xc, int yc, int x, int y) {
+        g.fillOval(xc + x, yc + y, 2, 2); 
+        g.fillOval(xc - x, yc + y, 2, 2); 
+        g.fillOval(xc + x, yc - y, 2, 2); 
+        g.fillOval(xc - x, yc - y, 2, 2); 
+        g.fillOval(xc + y, yc + x, 2, 2); 
+        g.fillOval(xc - y, yc + x, 2, 2); 
+        g.fillOval(xc + y, yc - x, 2, 2); 
+        g.fillOval(xc - y, yc - x, 2, 2); 
+    }
+
+    public static void main(String[] args) {
+       
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 800);
+
+        int xc = 400; 
+        int yc = 400; 
+        int r = 100;  
+
+        BresenhamCircle frame= new BresenhamCircle(xc, yc, r);
+       
+        frame.setVisible(true);
+    }
+}
+==================================================================
+
+import java.awt.*;
+import javax.swing.*;
+
+public class MidpointCircle extends JFrame {
+
+    private int xc, yc, r;
+
+    public MidpointCircle(int xc, int yc, int r) {
+        this.xc = xc;
+        this.yc = yc;
+        this.r = r;
+    }
+
+    public void paint(Graphics g) {
+        drawCircle(g, xc, yc, r);
+    }
+
+    private void drawCircle(Graphics g, int xc, int yc, int r) {
+        int x = 0, y = r;
+        int p = 1 - r; 
+
+        while (x <= y) {
+            // Plot points for all octants
+            plotPoints(g, xc, yc, x, y);
+
+            // Update x, y, and decision parameter
+            if (p < 0) {
+                p += 2 * x + 3;
+            } else {
+                p += 2 * (x - y) + 5;
+                y--;
+            }
+            x++;
+        }
+    }
+
+    private void plotPoints(Graphics g, int xc, int yc, int x, int y) {
+        // Plot the points in all 8 octants
+        g.fillOval(xc + x, yc + y, 2, 2); 
+        g.fillOval(xc - x, yc + y, 2, 2); 
+        g.fillOval(xc + x, yc - y, 2, 2); 
+        g.fillOval(xc - x, yc - y, 2, 2); 
+        g.fillOval(xc + y, yc + x, 2, 2); 
+        g.fillOval(xc - y, yc + x, 2, 2); 
+        g.fillOval(xc + y, yc - x, 2, 2); 
+        g.fillOval(xc - y, yc - x, 2, 2); 
+    }
+
+    public static void main(String[] args) {
+        
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 800);
+
+        int xc = 400; 
+        int yc = 400; 
+        int r = 100;  
+
+        MidpointCircle frame = new MidpointCircle(xc, yc, r);
+       
+        frame.setVisible(true);
+}
+}
+===============================================================
+import java.awt.*;
+import javax.swing.*;
+
+public class DDALine extends JFrame {
+
+    private int x1, y1, x2, y2;
+
+    public DDALine(int x1, int y1, int x2, int y2) {
+        this.x1 = x1;
+        this.y1 = y1;
+        this.x2 = x2;
+        this.y2 = y2;
+    }
+
+    public void paint(Graphics g) {
+        drawLine(g, x1, y1, x2, y2);
+    }
+
+    private void drawLine(Graphics g, int x1, int y1, int x2, int y2) {
+        int dx = x2 - x1;
+        int dy = y2 - y1;
+
+        
+        int steps = Math.max(Math.abs(dx), Math.abs(dy));
+
+        
+        float xIncrement = dx / (float) steps;
+        float yIncrement = dy / (float) steps;
+
+        
+        float x = x1, y = y1;
+
+        for (int i = 0; i <= steps; i++) {
+            
+            g.fillOval(Math.round(x), Math.round(y), 2, 2);
+
+            
+            x += xIncrement;
+            y += yIncrement;
+        }
+    }
+
+    public static void main(String[] args) {
+     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 800);
+
+        int x1 = 100, y1 = 100; 
+        int x2 = 600, y2 = 400; 
+
+        DDALine frame = new DDALine(x1, y1, x2, y2);
+        
+        frame.setVisible(true);
+    }
+}
+===================================================
